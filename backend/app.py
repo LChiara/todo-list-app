@@ -1,8 +1,7 @@
-# app_rtdb.py
+# app.py
 
-# Required Imports
 from flask import Flask, request, jsonify
-from firebase_admin import credentials, initialize_app, db
+from firebase_admin import credentials, db, initialize_app
 
 # Initialize Flask App
 app = Flask(__name__) 
@@ -16,7 +15,7 @@ default_app = initialize_app(cred, {
     })
 
 ref = db.reference("/tasks")
-        
+
 ### APIs ###
 @app.route('/add', methods=['POST'])
 def add_task():
@@ -73,5 +72,4 @@ def delete_task(id):
 
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()
