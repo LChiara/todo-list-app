@@ -29,8 +29,7 @@ def add_task():
 def get_tasks():
     try:
         tasks = ref.get()
-        ordered_tasks = dict(sorted(tasks.items(), key = lambda x: x[1]["id"]))
-        return jsonify(ordered_tasks), 200
+        return jsonify(tasks), 200
     except Exception as e:
         return f"An Error Occured: {e}"
     
@@ -52,6 +51,19 @@ def update_task(id):
     except Exception as e:
         return f"An Error Occured: {e}"
     
+@app.route('/update', methods=["PATCH", "POST", "PUT"])
+def update_task_ids():
+    try:
+        tasks = ref.get()
+        for task_with_new_id in request.json:
+            for key, task in tasks.items():
+                if task_with_new_id["name"] == task["name"]:
+                    task_to_update_ref = ref.child(key)
+                    task_to_update_ref.update({"id": task_with_new_id["id"]})
+                    break
+        return jsonify(ref.get()), 200
+    except Exception as e:
+        return f"An Error Occured: {e}"
     
 @app.route('/delete/<id>', methods=["GET", "DELETE"])
 def delete_task(id):
